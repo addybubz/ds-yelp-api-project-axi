@@ -1,9 +1,9 @@
-# APIs - Cumulative Lab
+# Yelp API Project
 
 
 ## Introduction 
 
-We've seen how the Yelp API works and how to create basic visualizations using Folium. It's time to put those skills to work in order to create a working map! Taking things a step further, you'll also independently explore how to perform pagination in order to retrieve a full results set from the Yelp API.
+We've learned how to query the Yelp API, analyze JSON data and create basic visualizations. It's time to put those skills to work in order to create a project of your own! Taking things a step further, you'll also independently explore how to perform pagination in order to retrieve a full results set from the Yelp API.
 
 ## Objectives
 
@@ -13,47 +13,42 @@ You will be able to:
 * Use pagination to retrieve all results from an API query
 * Practice parsing data returned from an API query
 * Practice interpreting visualizations of a dataset
-* Create maps using Folium
 
-## Your Task: Query Yelp for All Businesses in a Category and Analyze the Results
+# Task: Query Yelp for All Businesses in a Category and Analyze the Results
 
 ![restaurant counter with pizza](images/restaurant_counter.jpg)
 
 Photo by <a href="https://unsplash.com/@jordanmadrid?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Jordan Madrid</a> on <a href="/s/photos/pizza-restaurant?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
 
-### Overview
+## Overview
 
-You've now worked with some API calls, but we have yet to see how to retrieve a more complete dataset in a programmatic manner. In this lab, you will write a query of businesses on Yelp, then use *pagination* to retrieve all possible results for that query. Then you will create a summary of your findings, including a Folium map of the geographic locations of those businesses.
+You've now worked with some API calls, but we have yet to see how to retrieve a more complete dataset in a programmatic manner. In this lab, you will write a query of businesses on Yelp, then use *pagination* to retrieve all possible results for that query. Then you will pre-process and analyze your data, leading to a presentation of your findings.
 
-### Technical Details
+## Requirements
 
-Returning to the Yelp API, the [documentation](https://www.yelp.com/developers/documentation/v3/business_search) also provides us details regarding the **API limits**. These often include details about the number of requests a user is allowed to make within a specified time limit and the maximum number of results to be returned. In this case, we are told that any request has a **maximum of 50 results per request** and defaults to 20. Furthermore, any search will be limited to a **total of 1000 results**. To retrieve all 1000 of these results, we would have to page through the results piece by piece, retrieving 50 at a time. Processes such as these are often referred to as pagination.
+### 1. Make the Initial Request
 
-Also, be mindful of the **API** ***rate*** **limits**. You can only make **5000 requests per day** and are also can make requests too fast. Start prototyping small before running a loop that could be faulty. You can also use `time.sleep(n)` to add delays. For more details see https://www.yelp.com/developers/documentation/v3/rate_limiting.
+Start by filling in your API key to make the initial request to the business search API. 
 
-In this lab, you will define a search and then paginate over the results to retrieve all of the results. You'll then parse these responses as a list of dictionaries (for further exploration) and create a map using Folium to visualize the results geographically.
-
-### Requirements
-
-#### 1. Make the Initial Request
-
-Start by filling in your API key to make the initial request to the business search API. Investigate the structure of the response you get back and start figuring out how you will extract the relevant information.
-
-#### 2. Add Pagination
+### 2. Add Pagination
 
 Using loops and functions, collect the maximum number of results for your query from the API.
 
-#### 3. Perform Exploratory Analysis
+### 3. Prepare Data
+
+Investigate the structure of the response you get back and extract the relevant information.
+
+### 4. Perform Descriptive Analysis
 
 Interpret visualizations related to the price range, average rating, and number of reviews for all query results.
 
-#### 4. Create a Folium Map
+### 5. Create Presentation Notebook
 
-Using latitude and longitude data, plot the query results on an interactive map.
+Edit this notebook or create a new one to showcase your work.
 
-## 1. Make the Initial Request
+# 1. Make the Initial Request
 
-### Querying
+## Querying
 
 Start by making an initial request to the Yelp API. Your search must include at least 2 parameters: **term** and **location**. For example, you might search for pizza restaurants in NYC. The term and location is up to you but make the request below.
 
@@ -106,7 +101,7 @@ response_json = response.json()
 response_json.keys()
 ```
 
-### Extracting Data
+## Extracting Data
 
 Now, retrieve the value associated with the `'businesses'` key, and inspect its contents.
 
@@ -117,85 +112,26 @@ Now, retrieve the value associated with the `'businesses'` key, and inspect its 
 # Retrieve the value from response_json
 businesses = None
 
+# View number of records
+print(f"There are {len(businesses)} businesses in this response")
+
 # View the first 2 records
 businesses[:2]
 ```
 
-### Preparing Data
+# 2. Add Pagination
 
-Write a function `prepare_data` that takes in a list of dictionaries like `businesses` and returns a copy that has been prepared for analysis:
+Now that you are able to get one set of responses, known as a **page**, let's figure out how to request as many pages as possible.
 
-1. The `coordinates` key-value pair has been converted into two separate key-value pairs, `latitude` and `longitude`
-2. All other key-value pairs except for `name`, `review_count`, `rating`, and `price` have been dropped
-3. All dictionaries missing one of the relevant keys or containing null values have been dropped
+## Technical Details
 
-In other words, the final keys for each dictionary should be `name`, `review_count`, `rating`, `price`, `latitude`, and `longitude`.
+Returning to the Yelp API, the [documentation](https://www.yelp.com/developers/documentation/v3/business_search) also provides us details regarding the **API limits**. These often include details about the number of requests a user is allowed to make within a specified time limit and the maximum number of results to be returned. In this case, we are told that any request has a **maximum of 50 results per request** and defaults to 20. Furthermore, any search will be limited to a **total of 1000 results**. To retrieve all 1000 of these results, we would have to page through the results piece by piece, retrieving 50 at a time. Processes such as these are often referred to as pagination.
 
-Complete the function in the cell below:
+Also, be mindful of the **API** ***rate*** **limits**. You can only make **5000 requests per day** and are also can make requests too fast. Start prototyping small before running a loop that could be faulty. You can also use `time.sleep(n)` to add delays. For more details see https://www.yelp.com/developers/documentation/v3/rate_limiting.
 
+In this lab, you will define a search and then paginate over the results to retrieve all of the results. You'll then parse these responses as a list of dictionaries (for further exploration) and create a map using Folium to visualize the results geographically.
 
-```python
-# Replace None with appropriate code
-
-def prepare_data(data_list):
-    """
-    This function takes in a list of dictionaries and prepares it
-    for analysis
-    """
-    
-    # Make a new list to hold results
-    results = []
-    
-    for business_data in data_list:
-    
-        # Make a new dictionary to hold prepared data for this business
-        prepared_data = {}
-        
-        # Extract name, review_count, rating, and price key-value pairs
-        # from business_data and add to prepared_data
-        # If a key is not present in business_data, add it to prepared_data
-        # with an associated value of None
-        None
-    
-        # Parse and add latitude and longitude columns
-        None
-        
-        # Add to list if all values are present
-        if all(prepared_data.values()):
-            results.append(prepared_data)
-    
-    return results
-    
-# Test out function
-prepared_businesses = prepare_data(businesses)
-prepared_businesses[:5]
-```
-
-Check that your function created the correct keys:
-
-
-```python
-# Run this cell without changes
-
-assert sorted(list(prepared_businesses[0].keys())) == ['latitude', 'longitude', 'name', 'price', 'rating', 'review_count']
-```
-
-The following code will differ depending on your query, but we expect there to be 20 businesses in the original list, and potentially fewer in the prepared list (if any of them were missing data):
-
-
-```python
-# Run this cell without changes
-print("Original:", len(businesses))
-print("Prepared:", len(prepared_businesses))
-```
-
-Great! We will reuse this function once we have retrieved the full dataset.
-
-## 2. Add Pagination
-
-Now that you are able to extract information from one page of the response, let's figure out how to request as many pages as possible.
-
-### Determining the Total
+## Determining the Total
 
 Depending on the number of total results for your query, you will either retrieve all of the results, or just the first 1000 (if there are more than 1000 total).
 
@@ -282,8 +218,7 @@ In the cell below, write code that:
 
 * Creates an empty list for the full prepared dataset
 * Loops over all of the offsets from `get_offsets` and makes an API call each time with the specified offset
-* Calls `prepare_data` to get a cleaned version of the result of each API call
-* Extends the full prepared dataset list with each query's prepared dataset
+* Extends the full dataset list with each query's dataset
 
 
 ```python
@@ -305,9 +240,6 @@ for offset in get_offsets(total):
     # Get the list of businesses from the response_json
     businesses = None
     
-    # Call the prepare_data function to get a list of processed data
-    prepared_businesses = None
-    
     # Extend full_dataset with this list (don't append, or you'll get
     # a list of lists instead of a flat list)
     None
@@ -321,43 +253,154 @@ This code may take up to a few minutes to run.
 
 If you get an error trying to get the response body in JSON format, try adding `time.sleep(1)` right after the `requests.get` line, so your code will sleep for 1 second between each API call.
 
-## 3. Perform Exploratory Analysis
+# 3. Prepare Data
 
-Take the businesses from the previous question and do an initial exploratory analysis. We have provided some plots for you to interpret:
+Now that we have all of our data, let's prepare it for analysis. It can be helpful to start this process by inspecting the raw data.
 
 
 ```python
 # Run this cell without changes
-from collections import Counter
+
+# View the first 2 records
+full_dataset[:2]
+```
+
+Write a function `prepare_data` that takes in a list of dictionaries like `businesses` and returns a copy that has been prepared for analysis:
+
+1. The `coordinates` key-value pair has been converted into two separate key-value pairs, `latitude` and `longitude`
+2. All other key-value pairs except for `name`, `review_count`, `rating`, and `price` have been dropped
+3. All dictionaries missing one of the relevant keys or containing null values have been dropped
+
+In other words, the final keys for each dictionary should be `name`, `review_count`, `rating`, `price`, `latitude`, and `longitude`.
+
+Complete the function in the cell below:
+
+
+```python
+# Replace None with appropriate code
+
+def prepare_data(data_list):
+    """
+    This function takes in a list of dictionaries and prepares it
+    for analysis
+    """
+    
+    # Make a new list to hold results
+    results = []
+    
+    for business_data in data_list:
+    
+        # Make a new dictionary to hold prepared data for this business
+        prepared_data = {}
+        
+        # Extract name, review_count, rating, and price key-value pairs
+        # from business_data and add to prepared_data
+        # If a key is not present in business_data, add it to prepared_data
+        # with an associated value of None
+        None
+    
+        # Parse and add latitude and longitude columns
+        None
+        
+        # Add to list if all values are present
+        if all(prepared_data.values()):
+            results.append(prepared_data)
+    
+    return results
+    
+# Test out function
+prepared_businesses = prepare_data(full_dataset[:5])
+prepared_businesses[:5]
+```
+
+Check that your function created the correct keys:
+
+
+```python
+# Run this cell without changes
+
+assert sorted(list(prepared_businesses[0].keys())) == ['latitude', 'longitude', 'name', 'price', 'rating', 'review_count']
+```
+
+The following code will differ depending on your query, but there may be fewer results in the prepared list than in the full dataset (if any of them were missing data):
+
+
+```python
+# Run this cell without changes
+print("Original:", len(full_dataset))
+print("Prepared:", len(prepared_businesses))
+```
+
+Great! Now let's create a DataFrame to hold our data - this will make our cleaning and analysis easier.
+
+
+```python
+# Replace None with appropriate code
+
+# Import pandas
+None
+
+# Create DataFrame from prepared business data
+business_df = None
+
+# Inspect the DataFrame
+business_df.head()
+```
+
+To make analysis of prices easier, let's convert `price` to a numeric value indicating the number of dollar signs.
+
+
+```python
+# Replace None with appropriate code
+
+# Convert price to numeric
+None
+```
+
+# 4. Perform Descriptive Analysis
+
+## Descriptive Statistics
+
+Take the businesses from the previous question and do an initial descriptive analysis. Calculate summary statistics for the review counts, average rating, and price.
+
+
+```python
+# Replace None with appropriate code
+
+# Calculate summary statistics for the review counts, average rating, and price
+None
+```
+
+Describe the results displayed above and interpret them in the context of your query. (Your answer may differ from the solution branch depending on your query.)
+
+
+```python
+# Replace None with appropriate text
+"""
+None
+"""
+```
+
+## Histograms
+
+Create histograms for the review counts, average rating, and price.
+
+
+```python
+# Replace None with your code
 import matplotlib.pyplot as plt
 %matplotlib inline
 
 fig, (ax1, ax2, ax3) = plt.subplots(ncols=3, figsize=(16, 5))
 
-# Plot distribution of number of reviews
-all_review_counts = [x["review_count"] for x in full_dataset]
-ax1.hist(all_review_counts)
-ax1.set_title("Review Count Distribution")
-ax1.set_xlabel("Number of Reviews")
-ax1.set_ylabel("Number of Businesses")
+# Plot distribution of number of reviews per business
+all_review_counts = None
 
-# Plot rating distribution
-all_ratings = [x["rating"] for x in full_dataset]
-rating_counter = Counter(all_ratings)
-rating_keys = sorted(rating_counter.keys())
-ax2.bar(rating_keys, [rating_counter[key] for key in rating_keys])
-ax2.set_title("Rating Distribution")
-ax2.set_xlabel("Rating")
-ax2.set_ylabel("Number of Businesses")
+# Plot distribution of ratings across businesses
+all_ratings = None
 
-# Plot price distribution
-all_prices = [x["price"].replace("$", r"\$") for x in full_dataset]
-price_counter = Counter(all_prices)
-price_keys = sorted(price_counter.keys())
-ax3.bar(price_keys, [price_counter[key] for key in price_keys])
-ax3.set_title("Price Distribution")
-ax3.set_xlabel("Price Category")
-ax3.set_ylabel("Number of Businesses");
+# Plot distribution of prices across businesses
+all_prices = None
 ```
 
 Describe the distributions displayed above and interpret them in the context of your query. (Your answer may differ from the solution branch depending on your query.)
@@ -370,25 +413,20 @@ None
 """
 ```
 
-In the cell below, we also plot the rating distributions by price. In this setup, a price of one dollar sign is "lower price" and everything else is "higher price".
+## Ratings vs. Price
+
+Create a visualization showing the relationship between rating and price. You can do this a few different ways - one option could be to show the average price at each rating using a bar chart.
 
 
 ```python
-# Run this cell without changes
+# Replace None with your code
 
-higher_price = []
-lower_price = []
-for row in full_dataset:
-    if row["price"] == "$":
-        lower_price.append(row["rating"])
-    else:
-        higher_price.append(row["rating"])
-        
-fig, ax = plt.subplots()
 
-ax.hist([higher_price, lower_price], label=["higher price", "lower price"], density=True)
+# Calculate average price for each rating
+None
 
-ax.legend();
+# Plot results
+None
 ```
 
 Is a higher price associated with a higher rating? (No need for any additional math/statistics, just interpret what you see in the plot.)
@@ -401,18 +439,22 @@ None
 """
 ```
 
-Finally, let's look at ratings vs. review counts:
+## Ratings vs Review Counts
+
+Finally, let's look at ratings vs. review counts. You can analyze this relationship similarly to ratings vs. price.
 
 
 ```python
-# Run this cell without changes
-fig, ax = plt.subplots(figsize=(16,5))
+# Replace None with your code
 
-ax.scatter(all_review_counts, all_ratings, alpha=0.2)
-ax.set_xlabel("Number of Reviews")
-ax.set_ylabel("Rating")
-# "zoom in" to a subset of review counts
-ax.set_xlim(left=0, right=1000);
+# Calculate average review count for each rating
+rating_review_count = business_df.groupby('rating').agg({'review_count': 'mean'})
+
+# Plot results
+fig, ax = plt.subplots()
+ax.bar(x = list(rating_review_count.index), height = list(rating_review_count['review_count']), width = 0.3)
+ax.set_xlabel("Average Rating")
+ax.set_ylabel("Average Review Count")
 ```
 
 Is a higher number of reviews associated with a higher rating?
@@ -425,11 +467,11 @@ None
 """
 ```
 
-## 4. Create a Folium Map
+## Level Up: Create a Folium Map
 
 Make a map using Folium of the businesses you retrieved. Be sure to also add popups to the markers giving some basic information such as name, rating and price.
 
-You can center the map around the latitude and longitude of the first item in `full_dataset`.
+You can center the map around the latitude and longitude of the first item in your dataset.
 
 
 ```python
@@ -468,6 +510,26 @@ for business in full_dataset[:limit]:
 yelp_map
 ```
 
-## Summary
+# 5. Create Presentation Notebook
 
-Nice work! In this lab, you've made multiple API calls to Yelp in order to paginate through a results set, performing some basic exploratory analysis and then creating a nice interactive map to display the results using Folium! Well done!
+Now that you've completed your project, let's put it into an easily presentable format so you can add it to your portfolio. To do this, we recommend completing the following steps outside of this notebook.
+
+1. Create a new GitHub repository for your project.
+2. Save a copy of this notebook into your local repository.
+3. Edit the text and images in the notebook to present your project and help someone else understand it.
+4. Run your notebook from start to finish, then **delete your API key** and save it.
+5. Create a README.md file in your repository with a brief summary of your project.
+6. Push your updated repository to GitHub to share with your instructor and employers!
+
+# Level Up: Project Enhancements
+
+After completing the project, you could consider the following enhancements if you have time:
+
+* Save a cleaned version of your dataset in your repository, then modify the notebook to load and use that dataset for the analysis. This will allow others to replicate your analysis and avoid running their own API queries.
+* Use `seaborn` to improve the styling of your visualizations
+* Explain the implications of your findings for business owners or internal Yelp staff
+* Repeat the project for another business category or location, and compare the results
+
+# Summary
+
+Nice work! In this lab, you've made multiple API calls to Yelp in order to paginate through a results set, prepared your data for analysis, and then conducted and visualized descriptive analyses. Well done!
