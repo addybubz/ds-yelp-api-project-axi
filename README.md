@@ -533,3 +533,5 @@ After completing the project, you could consider the following enhancements if y
 # Summary
 
 Nice work! In this lab, you've made multiple API calls to Yelp in order to paginate through a results set, prepared your data for analysis, and then conducted and visualized descriptive analyses. Well done!
+# git_practice
+# Project1-Yelp_API
